@@ -84,3 +84,59 @@ let instantiate_contract = async () => {
 
 // // Contract address: secret1ny4kae9nexfaeakgpe73gld0u3eghnly340s66
 // await instantiate_contract();
+
+const contractAddress = "secret1ny4kae9nexfaeakgpe73gld0u3eghnly340s66";
+
+let try_query_count = async () => {
+  const my_query = await secretjs.query.compute.queryContract({
+    contract_address: contractAddress,
+    code_hash: contractCodeHash,
+    query: { get_count: {} },
+  });
+
+  console.log(my_query);
+};
+
+await try_query_count();
+
+let try_increment_count = async () => {
+  let tx = await secretjs.tx.compute.executeContract(
+    {
+      sender: wallet.address,
+      contract_address: contractAddress,
+      code_hash: contractCodeHash, // optional but way faster
+      msg: {
+        increment: {},
+      },
+      sentFunds: [], // optional
+    },
+    {
+      gasLimit: 100_000,
+    }
+  );
+  console.log("Incrementing tx: ", tx);
+};
+
+// await try_increment_count();
+// await try_query_count();
+
+let try_reset_count = async () => {
+  let tx = await secretjs.tx.compute.executeContract(
+    {
+      sender: wallet.address,
+      contract_address: contractAddress,
+      code_hash: contractCodeHash, // optional but way faster
+      msg: {
+        reset: { count: 1 },
+      },
+      sentFunds: [], // optional
+    },
+    {
+      gasLimit: 100_000,
+    }
+  );
+  console.log("resetting tx: ", tx);
+};
+
+// await try_reset_count();
+// await try_query_count();
